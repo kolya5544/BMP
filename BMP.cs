@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Drawing;
+using SkiaSharp;
 using System.IO;
 using System.Text;
 
@@ -102,7 +102,7 @@ namespace BMP
         /// Loads a BMP class from a System.Drawing.Bitmap
         /// </summary>
         /// <param name="bmp">Bitmap to load BMP from</param>
-        public void Load(Bitmap bmp)
+        public void Load(SKBitmap bmp)
         {
             int w = bmp.Width; int h = bmp.Height;
 
@@ -112,8 +112,8 @@ namespace BMP
             {
                 for (int y = 0; y<h; y++)
                 {
-                    Color c = bmp.GetPixel(x, y);
-                    newMatrix[x, y] = c.R * 0x10000 + c.G * 0x100 + c.B;
+                    SKColor c = bmp.GetPixel(x, y);
+                    newMatrix[x, y] = c.Red * 0x10000 + c.Green * 0x100 + c.Blue;
                 }
             }
 
@@ -126,7 +126,7 @@ namespace BMP
         /// <param name="filename">Filename of a file to load BMP from</param>
         public void Load(string filename)
         {
-            Load(new Bitmap(filename));
+            Load(SKBitmap.Decode(filename));
         }
 
         #region Initializers
@@ -151,7 +151,7 @@ namespace BMP
         /// Initializes a BMP class from a System.Drawing.Bitmap
         /// </summary>
         /// <param name="bmp">Bitmap to load BMP from</param>
-        public BMP(Bitmap bmp)
+        public BMP(SKBitmap bmp)
         {
             Load(bmp);
         }
