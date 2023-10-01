@@ -29,6 +29,35 @@ namespace BMP
             File.WriteAllBytes(filename, GetContents());
         }
 
+        public byte[] GetPicData()
+        {
+            BuildBMP();
+            Contents.Position = 54;
+            var toRead = Contents.Length - Contents.Position;
+            byte[] arr = new byte[toRead];
+            Contents.Read(arr, 0, (int)toRead);
+            return arr;
+        }
+
+        public void SetPicData(byte[] data, int width, int height)
+        {
+            matrix = new int[width, height];
+            MemoryStream ms = new MemoryStream(data);
+            for (int y = height - 1; y >= 0; y--)
+            {
+                int paddingLen = W % 4;
+                byte[] toRead = new byte[width * 3 + paddingLen];
+                ms.Read(toRead, 0, toRead.Length);
+                for (int i = 0; i<width; i++)
+                {
+                    byte B = toRead[i * 3];
+                    byte G = toRead[i * 3 + 1];
+                    byte R = toRead[i * 3 + 2];
+                    matrix[i, y] = R * 0x10000 + G * 0x100 + B;
+                }
+            }
+        }
+
         public byte[] GetContents()
         {
             BuildBMP();
